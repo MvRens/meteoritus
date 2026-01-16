@@ -38,6 +38,7 @@ pub async fn upload_handler(
             if let Some(callback) = &meteoritus.on_completed() {
                 callback(HandlerContext {
                     rocket: req.rocket,
+                    authorization: req.authorization,
                     file_info: &file,
                 });
             };
@@ -60,6 +61,7 @@ pub async fn upload_handler(
 #[derive(Debug)]
 pub struct UploadRequest<'r> {
     rocket: &'r Rocket<Orbit>,
+    authorization: Option<&'r str>,
     offset: u64,
 }
 
@@ -122,6 +124,7 @@ impl<'r> FromRequest<'r> for UploadRequest<'r> {
 
         let upload_values = UploadRequest {
             rocket: req.rocket(),
+            authorization: req.headers().get_one("Authorization"),
             offset,
         };
 

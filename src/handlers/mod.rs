@@ -20,5 +20,6 @@ use crate::fs::FileInfo;
 #[derive(Debug)]
 pub struct HandlerContext<'a, S> {
     pub rocket: &'a Rocket<Orbit>,
+    pub authorization: Option<&'a str>,
     pub file_info: &'a FileInfo<S>,
 }

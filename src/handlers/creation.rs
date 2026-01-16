@@ -46,6 +46,7 @@ pub fn creation_handler(
     if let Some(callback) = &meteoritus.on_creation() {
         if let Err(error) = callback(HandlerContext {
             rocket: req.rocket,
+            authorization: req.authorization,
             file_info: &file,
         }) {
             return CreationResponder::Failure(
@@ -60,6 +61,7 @@ pub fn creation_handler(
             if let Some(callback) = &meteoritus.on_created() {
                 callback(HandlerContext {
                     rocket: req.rocket,
+                    authorization: req.authorization,
                     file_info: &file,
                 });
             }
@@ -76,6 +78,7 @@ pub fn creation_handler(
 #[derive(Debug)]
 pub struct CreationRequest<'r> {
     rocket: &'r Rocket<Orbit>,
+    authorization: Option<&'r str>,
     upload_length: u64,
     metadata: Option<&'r str>,
 }
@@ -130,8 +133,11 @@ impl<'r> FromRequest<'r> for CreationRequest<'r> {
             Some(metadata) => Some(metadata),
         };
 
+        let authorization = req.headers().get_one("Authorization");
+
         let creation_values = CreationRequest {
             rocket: req.rocket(),
+            authorization,
             upload_length,
             metadata,
         };

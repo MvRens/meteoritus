@@ -23,6 +23,7 @@ pub fn termination_handler(
             if let Some(callback) = &meteoritus.on_termination() {
                 callback(HandlerContext {
                     rocket: req.rocket,
+                    authorization: None,
                     file_info: &file,
                 });
             }
